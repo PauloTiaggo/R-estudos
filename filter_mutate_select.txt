@@ -1,0 +1,58 @@
+library(dplyr)
+library(nycflights13)
+
+flights
+
+#5.2.4 - 1
+flights %>%
+  filter(arr_delay > 60 * 2)
+
+#5.2.4 - 2
+
+flights %>%
+  filter(dest == "IAH" | dest == "HOU")
+
+#5.2.4 - 3
+
+flights %>%
+  filter(carrier == "UA" | carrier == "AA" | carrier == "DL")
+
+#5.4.1 - 1
+
+flights %>%
+  select(
+    starts_with("dep_"),
+    starts_with("arr_")
+  )
+
+#5.5.2 - 1
+
+flights_new <- select(flights,
+                      dep_time,
+                      sched_dep_time,
+                      dep_delay,
+                      arr_delay,
+                      air_time,
+                      arr_time)
+
+flights_new <- flights_new %>% 
+  mutate(flights_new,
+         dep_time_hour = dep_time %/% 60,
+         dep_time_min = dep_time %% 60,
+         sched_dep_time_hour = sched_dep_time %/% 60,
+         sched_dep_time_min = sched_dep_time %% 60
+         )
+
+flights_new %>% 
+  filter(sched_dep_time_hour >= 15)
+
+flights_new <- flights_new %>% 
+  mutate(arr_dep_time = arr_time - dep_time)
+
+flights_new %>% 
+  select(arr_time,
+         dep_time,
+         dep_delay,
+         sched_dep_time,
+         air_time,
+         arr_dep_time)

@@ -1,0 +1,28 @@
+library(purrr)
+library(tidyverse)
+library(nycflights13)
+
+tibble(mtcars)
+#1
+mtcars %>% 
+  map(mean)
+
+#2
+flights %>% 
+  map(typeof)
+
+tibble(iris)
+
+#3    
+iris %>% 
+  map(unique) %>% 
+  lengths
+
+#4 não entendi bem
+y <- c(-10,0,10,100)
+1:10 %>%
+  map(~ rnorm(10, y, .x))
+
+y <- c(-10,0,10,100)
+1:10L %>% 
+  map(~rnorm(10, y, .x))

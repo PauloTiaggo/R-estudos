@@ -1,0 +1,73 @@
+library(ggplot2)
+library(dplyr)
+diamonds %>% 
+  ggplot(aes(cut, color)) +
+  geom_point()
+
+mpg %>% 
+  ggplot(aes(as.factor(cyl), manufacturer)) +
+  geom_jitter()
+
+ggplot(diamonds, aes(x = cut, y = price)) +
+  geom_violin() +
+  labs(title = "Preços de diamantes por tipo de corte")
+
+library(patchwork)
+p1 <- mtcars %>% ggplot(aes(mpg, disp)) + geom_point()
+p2 <- mtcars %>% ggplot(aes(gear, disp, group = gear)) + geom_boxplot()
+p3 <- mtcars %>% ggplot(aes(disp, qsec)) + geom_smooth()
+p4 <- mtcars %>% ggplot(aes(carb)) + geom_bar()
+
+# () + / |
+
+p1 | p2
+p5 <- p1 / p2
+p5 | p3
+
+(p1 | p2 | p4) / p3 + 
+  plot_annotation(
+    title = "Meu título",
+    subtitle = "Meu subtítulo",
+    caption = "Minha rubrica",
+    tag_levels = "I",
+    tag_prefix = "Fig. ",
+    tag_suffix = "A"
+  ) +
+  theme(plot.tag.position = c(1, 4))
+
+library(ggrepel)
+ggplot(mtcars, aes(wt, mpg, label = rownames(mtcars))) +
+  geom_label_repel()
+
+
+
+set.seed(2)
+d <- purrr::map_dfr(
+  letters,
+  ~ tibble::tibble(
+    idx = 1:400,
+    value = cumsum(runif(400, -1, 1)),
+    type = .,
+    flag = sample(c(TRUE, FALSE), size = 400, replace = TRUE)
+  )
+)
+d %>%
+  ggplot(aes(idx, value, colour = type)) +
+  geom_line()
+
+
+
+d %>%
+  filter(type %in% c("g", "s")) %>% 
+  ggplot(aes(idx, value, colour = type)) +
+  geom_line()
+
+
+
+library(gghighlight)
+d %>%
+  ggplot(aes(idx, value, colour = type)) +
+  geom_line() +
+  gghighlight(max(value > 20))
+
+

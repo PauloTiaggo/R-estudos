@@ -1,0 +1,56 @@
+library(dplyr)
+library(magrittr)
+library(nycflights13)
+library(stringr)
+library(purrr)
+data("flights")
+# Find all flights that
+# 
+# Had an arrival delay of two or more hours
+flights %>%
+  # select(arr_delay)
+  filter(arr_delay >= 2*60)
+# Flew to Houston (IAH or HOU)
+flights %>%
+  # select(dest)
+  # filter(dest == "IAH" | dest == "HOU")
+  filter(dest %in% c("IAH", "HOU"))
+ 
+match("HOU", c("HOU", "MIA"))
+"HOU" %in% c("HOU", "MIA")
+ 
+# Were operated by United, American, or Delta
+flights$carrier %>% unique
+carriers <- airlines %>% 
+  filter(str_detect(name, regex("United|american|delta", ignore_case = TRUE))) %>% 
+  pull(carrier)
+flights %>% 
+  filter(str_detect(carrier, carriers))
+  # pull(carrier) %>% 
+  # unique
+ 
+# Departed in summer (July, August, and September)
+flights %>% 
+  filter(month %in% 7:9)
+# Arrived more than two hours late, but didn’t leave late
+flights %>% 
+  filter(dep_delay < 0 & arr_delay > 0)
+# Were delayed by at least an hour, but made up over 30 minutes in flight
+flights %>% 
+  # filter(dep_delay > 60 & (arr_delay - dep_delay < -30)) %>%
+  filter(dep_delay > 60 & between(arr_delay - dep_delay, -Inf, -31)) %>%
+  select(dep_delay:arr_delay)
+# Departed between midnight and 6am (inclusive)
+flights %>% 
+  filter(between(dep_time, 0, 600))
+# Another useful dplyr filtering helper is between().
+# What does it do? Can you use it to simplify the code needed to
+# answer the previous challenges?
+# Sim, eu coloquei 2 vezes acima /\
+ 
+#   How many flights have a missing dep_time?
+flights %>% 
+  filter(is.na(dep_time))
+# What other variables are missing? What might these rows represent?
+flights %>% 
+  summarise_all(~ sum(is.na(.x)))

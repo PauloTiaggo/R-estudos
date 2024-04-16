@@ -1,0 +1,121 @@
+library(tidyverse)
+x <- tribble(
+  ~key, ~val_x,
+  1, "x1",
+  2, "x2",
+  3, "x3"
+)
+y <- tribble(
+  ~key, ~val_y,
+  1, "y1",
+  2, "y2",
+  4, "y3"
+)
+
+inner_join(
+  x, y,
+  by="key"
+)
+
+left_join(
+  x, y,
+  by="key"
+)
+
+right_join(
+  x, y,
+  by="key"
+)
+
+full_join(
+  x, y,
+  by="key"
+)
+
+# chaves duplicadas
+x <- tribble(
+  ~key, ~val_x,
+  1, "x1",
+  2, "x2",
+  2, "x3",
+  1, "x4"
+)
+y <- tribble(
+  ~key, ~val_y,
+  1, "y1",
+  2, "y2"
+)
+
+inner_join(
+  x, y,
+  by="key"
+)
+
+left_join(
+  x, y,
+  by="key"
+)
+
+right_join(
+  x, y,
+  by="key"
+)
+
+full_join(
+  x, y,
+  by="key"
+)
+
+
+x <- tribble(
+  ~chave, ~val_x,
+  1, "x1",
+  2, "x2",
+  3, "x3"
+)
+y <- tribble(
+  ~id, ~val_y,
+  1, "y1",
+  2, "y2",
+  4, "y3"
+)
+
+inner_join(
+  x, y,
+  by=c("chave" = "id")
+)
+
+library(nycflights13)
+data(flights)
+data(weather)
+
+flights %>% 
+  left_join(weather) %>% 
+  select(origin, dest, time_hour:visib) %>% 
+  arrange(-precip)
+
+library(magrittr)
+weather %<>%
+  rename(
+    ano = year,
+    mes = month,
+    dia = day
+  )
+
+flights %>% 
+  left_join(
+    weather,
+    by = c(
+      "year" = "ano",
+      "month" = "mes",
+      "day" = "dia",
+      "hour",
+      "time_hour",
+      "origin"
+    )
+  )
+
+
+
+
+

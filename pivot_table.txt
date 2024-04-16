@@ -1,0 +1,70 @@
+library(tidyr)
+library(stringr)
+data(relig_income)
+
+# religion | salario_anual_cat | salario_anual_count
+relig_income %>% 
+  pivot_longer(
+    !religion,
+    names_to = "salario",
+    values_to = "count"
+    ) %>% 
+  filter(!str_detect(salario, "refused")) %>% 
+  mutate(
+    frac = count / sum(count)
+  ) %>% 
+  # arrange(-count)
+  arrange(salario, religion, -frac)
+
+data(billboard)
+billboard %>% 
+  pivot_longer(
+    starts_with("wk"), names_to = "wk", values_to = "rank") %>%  #values_drop_na = TRUE
+    mutate(
+      rank = case_when( 
+        is.na(rank) ~ 102,
+        TRUE ~ rank
+      )
+    ) %>% 
+  write_csv("meucsv.csv")
+
+
+data(fish_encounters)
+
+fish_encounters %>% 
+  pivot_wider(
+    names_from = station,
+    values_from = seen,
+    names_prefix = "Station_",
+    values_fill = 0
+  ) %>% 
+  transmute(
+    fish,
+    total_station = rowSums(across(starts_with("Station")))
+  ) %>% 
+  arrange(-total_station)
+
+# convertendo operacoes do tidyverse em SQl
+
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+copy_to(con, mtcars)
+
+mtcars2 <- tbl(con, "mtcars")
+copy_to(con, fish_encounters)
+fish_encounters2 <- tbl(con, "fish_encounters")
+
+library(dbplyr)
+
+mtcars2 %>% 
+  group_by(cyl) %>% 
+  summarise(mpg = mean(mpg, na.rm = TRUE)) %>% 
+  arrange(-mpg) %>% 
+  show_query
+
+fish_encounters2 %>% 
+  pivot_wider(
+    names_from = station,
+    values_from = seen,
+    names_prefix = "Station_",
+    values_fill = 0
+  ) %>% show_query

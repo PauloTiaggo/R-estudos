@@ -1,0 +1,65 @@
+library(tidyverse)
+
+mpg %>% 
+  ggplot(aes(fl)) +
+  geom_bar()
+
+p <- mpg %>% 
+  ggplot(aes(displ, hwy, colour = class, size = cyl)) +
+  geom_point() +
+  labs(title = "Algum título") +
+  theme(
+    text = element_text(size = 8),
+    axis.ticks.x = element_line(
+      colour = "purple",
+      size = unit(3, "mm"),
+    ),
+    axis.ticks.y = element_line(
+      arrow = arrow(
+        angle = 25,
+        length = unit(3, "mm"),
+        ends = "both"
+      )
+    ),
+    legend.background = element_rect(
+      fill = "purple",
+      linetype = "dashed"
+    )
+  )
+
+logo_file <- system.file(
+  "extdata",
+  "logo.png",
+  package = "cowplot"
+)
+library(cowplot)
+ggdraw(p) + 
+  draw_image(logo_file, x = 1, y = 1, hjust = 1, vjust = 1, width = 0.13, height = 0.2)
+
+p + theme_minimal()
+library(ggthemes)
+p + ggthemes::theme_fivethirtyeight()
+
+economics %>% 
+  ggplot(aes(date, unemploy)) +
+  geom_line() +
+  scale_y_log10() +
+  scale_x_date(
+    date_breaks = "10 years",
+    date_labels = "%Y",
+    minor_breaks = "1 year",
+    # limits = c(date(1968), 2014)
+  )
+
+meu_plot <- mpg %>% 
+  ggplot(aes(displ, hwy, color = hwy)) +
+  geom_point() +
+  # scale_color_continuous(
+  #   trans = "log"
+  # ) +
+  labs(color = "log de consumo\nrodovia") +
+  # scale_color_brewer(palette = "Set1")
+  # scale_color_viridis_d() 
+  scale_color_viridis_c()
+
+ggsave("meuplot.png", plot = meuplot)

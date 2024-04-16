@@ -1,0 +1,60 @@
+library(nycflights13)
+library(tidyverse)
+
+flights
+weather
+planes
+airports
+
+#Ex 2
+flights2 <- flights %>% 
+  select(year:day, hour, origin, dest, tailnum, carrier)
+
+flights2 %>% 
+  left_join(
+    airports,
+    by = c('dest' = 'faa')
+  )
+
+#Ex 3
+planes_1 <- planes %>% 
+  mutate(
+    idade = 2023-year
+  ) %>% 
+  select(tailnum:year, model:speed, idade)
+
+flights_3 <-  flights %>% 
+  select(origin, dest, tailnum, carrier, dep_delay, arr_delay)
+
+flights_3 %>% 
+  left_join(
+    planes_1,
+    by = 'tailnum'
+  )
+
+#Ex 4
+weather_1 <- weather %>% 
+  select(origin:visib)
+
+weather_1 %>% 
+  left_join(
+    flights,
+    by = 'origin'
+  )
+
+#Ex 4
+# What weather conditions make it more likely to see a delay?
+library(nycflights13)
+library(dplyr)
+library(forcats)
+data(flights)
+data(weather)
+
+flights %>% 
+  left_join(weather) %>% 
+  select(arr_delay, dep_delay, temp:visib, -wind_dir, -pressure) %>%
+  # mutate(arr_delay_q = cut(arr_delay, 4, labels = c("Q1", "Q2", "Q3", "Q4"))) %>% 
+  # group_by(arr_delay_q) %>% 
+  summarise(across(temp:visib, ~cor(.x, y=arr_delay, use = "pairwise.complete.obs")))
+  
+
