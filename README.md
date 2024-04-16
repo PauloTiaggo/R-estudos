@@ -1,1 +1,1 @@
-Este repositório contém algumas anotações referentes à linguagem R.
+Este repositório contém algumas anotações dos meus estudos sobre a linguagem R.
